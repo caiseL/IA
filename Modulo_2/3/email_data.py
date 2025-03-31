@@ -14,13 +14,14 @@ class EmailBox:
 
 class EmailData:
     mail_data: pd.DataFrame
+    classifier: SpamClassifier
 
     def __init__(self) -> None:
         database_exists = self.database_exists()
         if not database_exists:
             self.create_database()
         self.mail_data = pd.read_csv(database_path)
-        print(self.get_inbox()["text"])
+        self.classifier = SpamClassifier()
 
     def database_exists(self) -> bool:
         return os.path.exists(database_path)
@@ -28,14 +29,13 @@ class EmailData:
     def create_database(self) -> None:
         mail_data = pd.read_csv("./dataset/spam_assassin.csv")
 
-        classifier = SpamClassifier()
         guesses = 0
         spam_guesses = 0
         inbox_guesses = 0
 
         for mail in mail_data.itertuples():
             index, text, target = mail
-            spam_result = classifier.classify_email(text, target)
+            spam_result = self.classifier.classify_email(text, target)
             mail_data.at[index, "target"] = 1 if spam_result.detected_as_spam else 0
 
             if spam_result.is_spam:
@@ -62,7 +62,9 @@ class EmailData:
     def show_percentage(self, value: int, total: int) -> str:
         return f"{value}/{total} ({round(100 * value / total, 2)}%)"
 
-    def insert_data(self, text: str, target: int) -> None:
+    def insert_data(self, text: str) -> None:
+        is_spam = self.classifier.spam_detector.is_spam(text)
+        target = 1 if is_spam else 0
         data = pd.DataFrame({"text": [text], "target": [target]})
         data.to_csv(database_path, mode="a", header=False, index=False)
 

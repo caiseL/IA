@@ -1,9 +1,6 @@
-import pandas as pd
 from dataclasses import dataclass
 
 from spam_detector import SpamDetector
-
-mail_data = pd.read_csv("./dataset/spam_assassin.csv")
 
 
 @dataclass
