@@ -15,7 +15,7 @@ class Interface(tk.Tk):
         sidebar.pack(side="left", fill="y", padx=0, pady=0)
 
         header_frame = tk.Frame(sidebar, bg="#f2f6fc", height=80)
-        header_frame.pack(fill="x", pady=(0, 20), padx=0)
+        header_frame.pack(fill="x", pady=(0, 20), padx=0)  
 
         tk.Label(
             header_frame,
@@ -62,6 +62,11 @@ class Interface(tk.Tk):
         )
         self.mail_listbox.pack(side="bottom", fill="x")
 
+        scrollbar = tk.Scrollbar(sidebar, orient="vertical")
+        scrollbar.pack(side="right", fill="y")
+        self.mail_listbox.config(yscrollcommand=scrollbar.set)
+        scrollbar.config(command=self.mail_listbox.yview)
+
         self.floating_button = tk.Button(
             self,
             text="Nuevo Correo +",
@@ -91,6 +96,21 @@ class Interface(tk.Tk):
 
     def insert_email(self, mail):
         self.mail_listbox.insert(tk.END, mail[:50])
+    
+    def send_email(self):
+        recipient = self.recipient_entry.get()
+        subject = self.subject_entry.get()
+        message = self.message_text.get("1.0", tk.END).strip()
+        if recipient and subject and message:
+            self.email_data.insert_data(message)
+            self.recipient_entry.delete(0, tk.END)
+            self.subject_entry.delete(0, tk.END)
+            self.message_text.delete("1.0", tk.END)
+            self.mail_listbox.insert(tk.END, f"De: {recipient}"+f" Asunto: {subject}) "+ message[:50])
+            self.mail_listbox.yview(tk.END)  
+        else:
+            tk.messagebox.showwarning("Complete todos los campos")
+
 
     def open_new_mail(self):
         new_mail_window = tk.Toplevel(self)
@@ -142,5 +162,6 @@ class Interface(tk.Tk):
             bd=0,
             padx=5,
             pady=5,
+            command=self.send_email
         )
         send_button.pack(anchor="se")
