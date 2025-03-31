@@ -11,64 +11,90 @@ class Interface(tk.Tk):
         self.geometry("1280x720")
         self.configure(bg="#f5eef5")
 
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-
-        sidebar = tk.Frame(self, bg="#e0e0e0", width=250)
-        sidebar.grid(row=0, column=0, sticky="ns")
-
-        tk.Label(sidebar, text="Bandeja de Correo", font=("Arial", 20), bg="#e0e0e0").pack(pady=18)
-
-        self.inbox_button = tk.Button(sidebar, text="Bandeja de Entrada", font=("Arial", 16), command=self.show_inbox)
-        self.inbox_button.pack(pady=10, fill="x")
-
-        self.spam_button = tk.Button(sidebar, text="Bandeja de Spam", font=("Arial", 16), command=self.show_spam)
-        self.spam_button.pack(pady=10, fill="x")
-
-        self.new_mail_button = tk.Button(sidebar, text="Nuevo Correo", font=("Arial", 16) , command=self.open_new_mail)
-        self.new_mail_button.pack(pady=10, fill="x")
+        sidebar = tk.Frame(self, bg="#f2f6fc", width=280) 
+        sidebar.pack(side="left", fill="y", padx=0, pady=0)
+        
+        header_frame = tk.Frame(sidebar, bg="#f2f6fc", height=80)
+        header_frame.pack(fill="x", pady=(0, 20), padx=0)
+        
+        tk.Label(header_frame, text="Bandeja de Correo", font=("Arial", 18, "bold"), 
+                bg="#f2f6fc", fg="#5f6368").pack(pady=20, padx=20, anchor="w")
+        
+        button_style = {
+            "font": ("Arial", 14),
+            "bg": "#f2f6fc",
+            "fg": "#202124",
+            "bd": 0, 
+            "activebackground": "#e8eaed",
+            "activeforeground": "#202124",
+            "highlightthickness": 0,
+            "anchor": "w",
+            "padx": 20,
+            "pady": 12,
+            "relief": "flat"
+        }
+        
+        self.inbox_button = tk.Button(sidebar, text="Bandeja de Entrada", command=self.show_inbox, **button_style)
+        self.inbox_button.pack(fill="x", pady=(0, 5))
+        
+        self.spam_button = tk.Button(sidebar, text="Bandeja de Spam", command=self.show_spam, **button_style)
+        self.spam_button.pack(fill="x", pady=5)
 
         self.main_frame = tk.Frame(self, bg="#ffffff")
-        self.main_frame.grid(row=0, column=1, sticky="nsew")
-
-        self.mail_listbox = tk.Listbox(self.main_frame, font=("Arial", 14), selectmode=SINGLE)
-        self.mail_listbox.pack(side="left", fill="both", expand=True)
-
-        scrollbar = tk.Scrollbar(self.main_frame, orient="vertical", command=self.mail_listbox.yview)
-        scrollbar.pack(side="right", fill="y")
-        self.mail_listbox.config(yscrollcommand=scrollbar.set)
+        self.main_frame.pack(side="right", fill="both", expand=True)
+        
+        self.mail_listbox = tk.Listbox(self.main_frame, font=("Arial", 14),  selectmode=SINGLE, height=26, bg="#ffffff",
+        highlightthickness=0)
+        self.mail_listbox.pack(side="bottom", fill="x")
+        
+        self.floating_button = tk.Button(self, text="Nuevo Correo +", font=("Arial", 14, "bold"), bg="#1a73e8", fg="white", 
+        bd=0, padx=20, pady=10, command=self.open_new_mail)
+        self.floating_button.place(relx=0.95, rely=0.05, anchor="ne")
 
     def show_inbox(self):
         self.mail_listbox.delete(0, END)
         inbox_mails = mail_data[mail_data['target'] == 0]['text']
         for mail in inbox_mails:
-            self.mail_listbox.insert(END, mail[:100] + "..." if len(mail) > 100 else mail)
+            self.mail_listbox.insert(END, mail[:50] + "..." if len(mail) > 50 else mail)  
 
     def show_spam(self):
         self.mail_listbox.delete(0, END)
         spam_mails = mail_data[mail_data['target'] == 1]['text']
         for mail in spam_mails:
-            self.mail_listbox.insert(END, mail[:100] + "..." if len(mail) > 50 else mail)
+            self.mail_listbox.insert(END, mail[:50] + "..." if len(mail) > 50 else mail)
 
     def open_new_mail(self):
         new_mail_window = tk.Toplevel(self)
         new_mail_window.title("Nuevo Correo")
-        new_mail_window.geometry("800x600")
-        new_mail_window.configure(bg="#f5eef5")
-        frame = tk.Frame(new_mail_window, bg="#f5eef5")
-        frame.pack(padx=20, pady=20, fill=tk.BOTH, expand=True)
+        new_mail_window.geometry("970x600")
+        new_mail_window.configure(bg="#ffffff")
+        new_mail_window.resizable(False, False)
+        
+        main_frame = tk.Frame(new_mail_window, bg="#ffffff")
+        main_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
-        tk.Label(frame, text="Remitente:", font=("Arial", 16), bg="#f5eef5", anchor="w").grid(row=0, column=0, sticky="w", pady=(10, 0))
-        self.sender_entry = tk.Text(frame, font=("Arial", 14), height=1, width=60)
-        self.sender_entry.grid(row=1, column=0, padx=10, pady=10)
+        form_frame = tk.Frame(main_frame, bg="#ffffff")
+        form_frame.pack(padx=20, pady=15, fill=tk.BOTH, expand=True)
+        
+        tk.Label(form_frame, text="De:", font=("Arial", 12), bg="#ffffff", anchor="w").grid(row=0, column=0, sticky="w", pady=(0, 5))
+        
+        self.recipient_entry = tk.Entry(form_frame, font=("Arial", 14))
+        self.recipient_entry.grid(row=1, column=0, sticky="ew", pady=(0, 15))
+        
+        tk.Label(form_frame, text="Asunto:", font=("Arial", 12), bg="#ffffff", anchor="w").grid(
+        row=2, column=0, sticky="w", pady=(0, 5))
+        
+        self.subject_entry = tk.Entry(form_frame, font=("Arial", 14), highlightthickness=1, highlightcolor="#1a73e8", highlightbackground="#dadce0")
+        self.subject_entry.grid(row=3, column=0, sticky="ew", pady=(0, 15))
+        
+        self.message_text = tk.Text(form_frame, font=("Arial", 14),  wrap=tk.WORD, padx=5, pady=5, height=15)
+        self.message_text.grid(row=4, column=0, sticky="nsew", pady=(0, 10))
 
-        tk.Label(frame, text="Asunto:", font=("Arial", 16), bg="#f5eef5", anchor="w").grid(row=2, column=0, sticky="w", pady=(10, 0))
-        self.new_mail_text = tk.Text(frame, font=("Arial", 14), width=60, height=15)
-        self.new_mail_text.grid(row=3, column=0, padx=10, pady=10)
-
-        send_button = tk.Button(frame, text="Enviar", font=("Arial", 14))
-        send_button.grid(row=4, column=0, pady=20, sticky="e")
-
+        button_frame = tk.Frame(form_frame, bg="#ffffff")
+        button_frame.grid(row=5, column=0, sticky="se", pady=(10, 0)) 
+    
+        send_button = tk.Button(button_frame, text="Enviar", font=("Arial", 14), bg="#1a73e8", fg="white", bd=0, padx=5, pady=5)
+        send_button.pack(anchor="se")
 
 
 
