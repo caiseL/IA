@@ -1,4 +1,4 @@
-##Problema a resolver con un sistema experto.
+## Problema a resolver con un sistema experto.
 
 Se pretende hacer un sistema experto que diagnostique enfermedades que afecten el sistema nervioso.
 
