@@ -1,0 +1,170 @@
+<div class="notebook">
+
+<div class="nb-cell markdown" name="md1">
+This notebook uses the student profile
+</div>
+
+<div class="nb-cell program" name="p1">
+evaluar :-
+    writeln("Sistema Experto: Enfermedades que afectan el sistema nervioso"),
+    enfermedad(Enfermedad),
+    write('La enfermedad que tiene el paciente es: '),
+    writeln(Enfermedad),
+    deshacer, !.
+
+enfermedad(alzheimer) :- alzheimer.
+enfermedad(ela) :- ela.
+enfermedad(friedreich) :- friedreich.
+enfermedad(huntington) :- huntington.
+enfermedad(lewy) :- lewy.
+enfermedad(parkinson) :- parkinson.
+enfermedad(ame) :- ame.
+enfermedad(guillain_barre) :- guillain_barre.
+enfermedad(esclerosis_multiple) :- esclerosis_multiple.
+enfermedad(neuralgia_trigemino) :- neuralgia_trigemino.
+enfermedad(meningitis) :- meningitis.
+enfermedad(epilepsia) :- epilepsia.
+enfermedad(neuropatia_periferica) :- neuropatia_periferica.
+enfermedad(miasteniagravis) :- miastenia_gravis.
+enfermedad(tetanos) :- tetanos.
+enfermedad(tumor_cerebral) :- tumor_cerebral.
+
+alzheimer :-
+    verificar(problemas_de_memoria),            
+    verificar(descuidos_en_el_autocuidado),     
+    verificar(dificultad_para_escribir),        
+    verificar(dificultad_para_leer),           
+    verificar(dificultad_para_hablar).          
+
+% Esclerosis Lateral Amiotrofica (ELA)
+ela :-
+    verificar(dificultad_para_respirar),       
+    verificar(dificultad_para_tragar),         
+    verificar(dificultad_para_hablar),         
+    verificar(cambios_en_la_voz).               
+
+% Ataxia de Friedreich
+friedreich :-
+    verificar(dificultad_para_caminar),        
+    verificar(debilidad_muscular),              
+    verificar(dificultad_para_hablar),          
+    verificar(movimientos_involuntarios_de_ojos),
+    verificar(escoliosis),                     
+    verificar(palpitaciones).                   
+
+huntington :-
+    verificar(conductas_antisociales),          
+    verificar(alucinaciones),                  
+    verificar(impaciencia),                     
+    verificar(paranoia),                        
+    verificar(problemas_de_memoria),            
+    verificar(dificultad_para_hablar),          
+    verificar(dificultad_para_tragar).         
+
+% Demencia con Cuerpos de Lewy
+lewy :-
+    verificar(demencia),                     
+    verificar(cambios_en_la_concentracion),    
+    verificar(alucinaciones_visuales),          
+    verificar(problemas_de_movimiento),         
+    verificar(problemas_de_postura),            
+    verificar(trastorno_sueno_rem).             
+
+parkinson :-
+    verificar(temblores),                       
+    verificar(lentitud_de_movimiento),         
+    verificar(rigidez_muscular),                
+    verificar(mala_postura),                    
+    verificar(problemas_de_equilibrio),         
+    verificar(cambios_en_el_habla),             
+    verificar(cambios_en_la_escritura).         
+
+% Atrofia Muscular Espinal (AME)
+ame :-
+    verificar(dificultad_para_tragar),          
+    verificar(problemas_respiratorios),         
+    verificar(contracturas_musculares),         
+    verificar(dificultad_para_caminar),         
+    verificar(escoliosis),                     
+    verificar(incapacidad_para_caminar_sin_ayuda).
+
+
+neuropatia_periferica :-
+    verificar(hormigueo_en_extremidades),       
+    verificar(perdida_de_sensibilidad),         
+    verificar(problemas_de_movimiento).         
+
+guillain_barre :-
+    verificar(debilidad_muscular_ascendente),   
+    verificar(debilidad_muscular),              
+    verificar(reflejos_ausentes),               
+    verificar(problemas_respiratorios).         
+
+esclerosis_multiple :-
+    verificar(dificultad_para_caminar),        
+    verificar(fatiga_cronica),                 
+    verificar(vision_borroso),                
+    verificar(problemas_de_equilibrio).         
+
+epilepsia :-
+    verificar(convulsiones),                   
+    verificar(perdida_de_conciencia),          
+    verificar(confusion_temporal).              
+
+tumor_cerebral :-
+    verificar(dolor_de_cabeza_persistente),     
+    verificar(nauseas),                         
+    verificar(cambios_en_la_vision),           
+    verificar(problemas_de_memoria).          
+
+neuralgia_trigemino :-
+    verificar(dolor_facial_intenso),           
+    verificar(dolor_punzante),                 
+    verificar(episodios_breves).           
+
+meningitis :-
+    verificar(fiebre),                    
+    verificar(rigidez_de_cuello).             
+
+miastenia_gravis :-
+    verificar(caida_del_parpado),       
+    verificar(vision_doble),                   
+    verificar(dificultad_para_hablar).       
+
+tetanos :-
+    verificar(fotofobia),                       
+    verificar(rigidez_de_cuello),               
+    verificar(espasmos_musculares),           
+    verificar(rigidez_muscular),               
+    verificar(hiperreflexia).                   
+
+preguntar(Pregunta) :-
+    write('El paciente tiene: '),
+    write(Pregunta),
+    write('? (si/no): '),
+    read(Respuesta),
+    nl,
+    ((Respuesta == si) -&gt; assert(si(Pregunta)) ; assert(no(Pregunta)), fail).
+
+:- dynamic si/1, no/1.
+
+verificar(S) :-
+    (si(S) -&gt; true ; (no(S) -&gt; fail ; preguntar(S))).
+
+deshacer :- retract(si(_)), fail.
+deshacer :- retract(no(_)), fail.
+deshacer.
+</div>
+
+<div class="nb-cell query" name="q1">
+evaluar 
+</div>
+
+<div class="nb-cell program" data-background="true" data-singleline="true" name="p2">
+% Student exercise profile
+:- set_prolog_flag(occurs_check, error).		% disallow cyclic terms
+:- set_prolog_stack(global, limit(8 000 000)).  % limit term space (8Mb)
+:- set_prolog_stack(local,  limit(2 000 000)).  % limit environment space
+</div>
+
+</div>
