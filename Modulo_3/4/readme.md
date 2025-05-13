@@ -22,3 +22,5 @@ El sistema cuenta con 16 enfermedades/condiciones los cuales son:
 </ul>
 
 La carpeta cuenta con un archivo .swinb para ejercutarse en SWISH sin la necesidad de instalar nada de manera local
+(En caso de que no poder abrirse adjunto el link)
+https://swish.swi-prolog.org/p/Sistema%20Experto%3A%20Enfermedades%20del%20sistema%20nervioso.swinb
